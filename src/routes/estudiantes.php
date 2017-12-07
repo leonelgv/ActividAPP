@@ -122,3 +122,24 @@ $app->put('/api/estudiantes/update/{nocontrol}', function(Request $request, Resp
         echo '{"error": {"text": '.$e->getMessage().'}';
     }
 });
+
+// Borrar estudiante
+$app->delete('/api/estudiantes/delete/{nocontrol}', function(Request $request, Response $response){
+    $nocontrol = $request->getAttribute('nocontrol');
+
+    $sql = "DELETE FROM estudiante WHERE nocontrol = $nocontrol";
+
+    try{
+        // Obtener el objeto DB
+        $db = new db();
+        // Conectar
+        $db = $db->connect();
+
+        $stmt = $db->prepare($sql);
+        $stmt->execute();
+        $db = null;
+        echo '{"notice": {"text": "Estudiante eliminado"}';
+    } catch(PDOException $e){
+        echo '{"error": {"text": '.$e->getMessage().'}';
+    }
+});
