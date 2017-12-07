@@ -80,3 +80,45 @@ $app->post('/api/estudiantes/add', function(Request $request, Response $response
         echo '{"error": {"text": '.$e->getMessage().'}';
     }
 });
+
+// Actualizar estudiante
+$app->put('/api/estudiantes/update/{nocontrol}', function(Request $request, Response $response){
+    $nocontrol = $request->getParam('nocontrol');
+    $nombre = $request->getParam('nombre');
+    $apellidop = $request->getParam('apellidop');
+    $apellidom = $request->getParam('apellidom');
+    $semestre = $request->getParam('semestre');
+    $carrera_clave = $request->getParam('carrera_clave');
+
+    $sql = "UPDATE estudiante SET
+                nocontrol               = :nocontrol,
+                nombre_estudiante       = :nombre,
+                apellido_p_estudiante   = :apellidop,
+                apellido_m_estudiante   = :apellidom,
+                semestre                = :semestre,
+                carrera_clave           = :carrera_clave
+            WHERE nocontrol = $nocontrol";
+
+    try{
+        // Obtener el objeto DB
+        $db = new db();
+        // Conectar
+        $db = $db->connect();
+
+        $stmt = $db->prepare($sql);
+
+        $stmt->bindParam(':nocontrol',      $nocontrol);
+        $stmt->bindParam(':nombre',         $nombre);
+        $stmt->bindParam(':apellidop',      $apellidop);
+        $stmt->bindParam(':apellidom',      $apellidom);
+        $stmt->bindParam(':semestre',       $semestre);
+        $stmt->bindParam(':carrera_clave',  $carrera_clave);
+
+        $stmt->execute();
+
+        echo '{"notice": {"text": "Estudiante actualizado"}';
+
+    } catch(PDOException $e){
+        echo '{"error": {"text": '.$e->getMessage().'}';
+    }
+});
