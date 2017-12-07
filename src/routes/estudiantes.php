@@ -11,9 +11,9 @@ $app->get('/api/estudiantes', function(Request $request, Response $response){
 	$sql = "select * from estudiante";
 
 	try{
-		// Get DB Object
+		// Obtener el objeto DB 
         $db = new db();
-        // Connect
+        // Conectar
         $db = $db->connect();
 
         $stmt = $db->query($sql);
@@ -21,6 +21,27 @@ $app->get('/api/estudiantes', function(Request $request, Response $response){
         $db = null;
         echo json_encode($estudiantes);
 	} catch(PDOException $e){
+        echo '{"error": {"text": '.$e->getMessage().'}';
+    }
+});
+
+// Get Single Customer
+$app->get('/api/estudiantes/{nocontrol}', function(Request $request, Response $response){
+    $nocontrol = $request->getAttribute('nocontrol');
+
+    $sql = "SELECT * FROM estudiante WHERE nocontrol = $nocontrol";
+
+    try{
+        // Obtener el objeto DB
+        $db = new db();
+        // Conectar
+        $db = $db->connect();
+
+        $stmt = $db->query($sql);
+        $estudiante = $stmt->fetchAll(PDO::FETCH_OBJ);
+        $db = null;
+        echo json_encode($estudiante);
+    } catch(PDOException $e){
         echo '{"error": {"text": '.$e->getMessage().'}';
     }
 });
